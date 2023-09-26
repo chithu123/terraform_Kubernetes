@@ -1,4 +1,5 @@
 # terraform_Kubernetes
+-----------------------
 
 Utilize /root/terraform_challenge a directory to store your Terraform configuration files.
 
@@ -23,3 +24,7 @@ Service name: webapp-service
 Service Type: NodePort
 Port: 8080
 NodePort: 30080
+
+
+
+![image](https://github.com/chithu123/terraform_Kubernetes/assets/99309914/0bc37647-f91a-46f0-b085-5581104c5df1)
