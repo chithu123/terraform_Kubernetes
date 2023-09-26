@@ -79,6 +79,39 @@ MYSQL_ROOT_PASSWORD=1234
 MYSQL_DATABASE=simple-website
 Attach volume mariadb-volume to /var/lib/mysql a directory within db container.
 
+# terraform_AWS:
+---------------
+
+
+![image](https://github.com/chithu123/terraform_Kubernetes/assets/99309914/383109de-d1c7-4ee8-91df-107497a0b165)
+
+Architecture Diagram
+---------------------
+In this challenge, we will implement a simple EC2 instance with some preinstalled packages.
+
+The requirements in detail:
+--------------------------
+Create a terraform key-pair citadel-key with key_name citadel.
+Upload the public key ec2-connect-key.pub to the resource. You may use the file function to read the public key at /root/terraform-challenges/project-citadel/.ssh
+AMI: ami-06178cf087598769c, use variable named ami
+Region: eu-west-2, use variable named region
+Instance Type: m5.large, use variable named instance_type
+Elastic IP address attached to the EC2 instance
+Create a local-exec provisioner for the eip resource and use it to print the attribute called public_dns to a file /root/citadel_public_dns.txt on the iac-server
+Install Nginx on the citadel instance, and make use of the user_data argument.
+Using the file function or by making use of the heredoc syntax, use the script called install-nginx.sh as the value for the user_data argument.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
