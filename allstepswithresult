@@ -1,0 +1,142 @@
+Kubernetes Project:
+
+Lab 1:
+---------
+
+-----------------
+
+Questions:
+
+Challenge
+In this challenge, we will deploy several Kubernetes resources using Terraform. If you don’t know Kubernetes, this will be somewhat confusing as the resource schema only makes sense if you understand Kubernetes.
+
+Utilize /root/terraform_challenge a directory to store your Terraform configuration files.
+
+The requirements in detail:
+
+Terraform version: 1.1.5 installed on controlplane?
+Configure terraform and provider settings within the provider.tf file with the following specifications:
+Configure terraform to use hashicorp/kubernetes provider.
+Specify the provider’s local name: kubernetes
+Provider version: 2.11.0
+Configure Kubernetes provider with the path to your kubeconfig file: /root/.kube/config
+Create a terraform resource frontend for Kubernetes deployment with the following specs:
+Deployment Name: frontend
+Deployment Labels = name: frontend
+Replicas: 4
+Pod Labels = name: webapp
+Image: kodekloud/webapp-color:v1
+Container name: simple-webapp
+Container port: 8080
+Create a terraform resource webapp-service for Kubernetes service with the following specs:
+Service name: webapp-service
+Service Type: NodePort
+Port: 8080
+NodePort: 30080
+
+
+
+Solution:
+--------
+
+which terraform
+
+apt update
+apt install unzip -y
+curl -L -o /tmp/terraform_1.1.5_linux_amd64.zip https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_linux_amd64.zip
+unzip -d /usr/local/bin /tmp/terraform_1.1.5_linux_amd64.zip
+
+provider.tf
+-----------
+
+terraform {
+  required_providers {
+    kubernetes = {
+      source = "hashicorp/kubernetes
+      version = "2.11.0"
+    }
+  }
+}
+
+provider "kubernetes" {
+  config_path    = "/root/.kube/config"
+}
+
+terraform init
+
+main.tf
+------
+
+
+resource "kubernetes_deployment" "frontend" {
+  metadata {
+    name = "frontend"
+    labels = {
+      name = "frontend"
+    }
+  }
+  spec {
+    replicas = 4
+    selector {
+      match_labels = {
+        name = "webapp"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          name = "webapp"
+        }
+      }
+      spec {
+        container {
+          image = "kodekloud/webapp-color:v1"
+          name  = "simple-webapp"
+          port {
+            container_port = 8080
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "webapp-service" {
+  metadata {
+    name = "webapp-service"
+  }
+  spec {
+    selector = {
+      name = "webapp"
+    }
+    port {
+      port        = 8080
+      target_port = 8080
+      node_port   = 30080
+    }
+
+    type = "NodePort"
+  }
+}
+
+
+ Deploy:
+------
+
+terraform plan 
+terraform apply
+
+
+Result:
+------
+
+kubernetes_service.webapp-service: Creating...
+kubernetes_deployment.frontend: Creating...
+kubernetes_service.webapp-service: Creation complete after 0s [id=default/webapp-service]
+kubernetes_deployment.frontend: Still creating... [10s elapsed]
+kubernetes_deployment.frontend: Creation complete after 16s [id=default/frontend]
+
+Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
+
+
+----------------------------------------------------------
